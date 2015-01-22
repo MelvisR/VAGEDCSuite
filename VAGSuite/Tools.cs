@@ -48,7 +48,7 @@ namespace VAGSuite
             string retval = string.Empty;
             try
             {
-                int partnumberAddress = Tools.Instance.findSequence(allBytes, 0, new byte[5] { 0x45, 0x44, 0x43, 0x20, 0x20 }, new byte[5] { 1, 1, 1, 1, 1 });
+                int partnumberAddress = Tools.Instance.findSequence(allBytes, 0, new byte[5] { 0x45, 0x44, 0x43, 0x20, 0x20 }, new byte[5] { 1, 1, 1, 1, 1 }); // "EDC  "
                 if (partnumberAddress > 0)
                 {
                     // for EDC
@@ -70,7 +70,7 @@ namespace VAGSuite
                 }
                 else
                 {
-                    partnumberAddress = Tools.Instance.findSequence(allBytes, 0, new byte[4] { 0x30, 0x32, 0x38, 0x31}, new byte[4] { 1, 1, 1, 1 });
+                    partnumberAddress = Tools.Instance.findSequence(allBytes, 0, new byte[4] { 0x30, 0x32, 0x38, 0x31}, new byte[4] { 1, 1, 1, 1 }); // "0281"
                     if (partnumberAddress > 0)
                     {
                         retval = System.Text.ASCIIEncoding.ASCII.GetString(allBytes, partnumberAddress, 10).Trim();
@@ -78,7 +78,7 @@ namespace VAGSuite
                 }
                 if (retval == string.Empty)
                 {
-                    partnumberAddress = Tools.Instance.findSequence(allBytes, 0, new byte[4] { 0x30, 0x32, 0x38, 0x31 }, new byte[4] { 1, 1, 1, 1 });
+                    partnumberAddress = Tools.Instance.findSequence(allBytes, 0, new byte[4] { 0x30, 0x32, 0x38, 0x31 }, new byte[4] { 1, 1, 1, 1 }); // "0281"
                     if (partnumberAddress > 0)
                     {
                         retval = System.Text.ASCIIEncoding.ASCII.GetString(allBytes, partnumberAddress, 10).Trim();
@@ -87,7 +87,7 @@ namespace VAGSuite
                 if (retval == string.Empty)
                 {
                     // check 512 kB EDC17 file, audi Q7 3.0TDI
-                    partnumberAddress = Tools.Instance.findSequence(allBytes, 0, new byte[7] { 0x45, 0x44, 0x43, 0x31, 0x37, 0x20, 0x20 }, new byte[7] { 1, 1, 1, 1, 1, 1, 1 });
+                    partnumberAddress = Tools.Instance.findSequence(allBytes, 0, new byte[7] { 0x45, 0x44, 0x43, 0x31, 0x37, 0x20, 0x20 }, new byte[7] { 1, 1, 1, 1, 1, 1, 1 }); // "EDC17  "
                     if (partnumberAddress > 0)
                     {
                         retval = "EDC17" + System.Text.ASCIIEncoding.ASCII.GetString(allBytes, partnumberAddress - 68, 10).Trim();
@@ -157,6 +157,17 @@ namespace VAGSuite
 						retval = sb3.ToString();
 					}
 				}
+                if (retval == string.Empty)
+                {
+
+                    int pos = Tools.Instance.findSequence(allBytes, 0, Encoding.ASCII.GetBytes("ME9.6"), new byte[5] { 1, 1, 1, 1, 1 });
+                    if (pos > 0)
+                    {
+                        Console.WriteLine("Found ME9.6 in firmware!");
+                        retval = "ME96";
+                    }
+                }
+
                 if (retval.StartsWith("EDC17"))
                 {
                     if (Tools.Instance.findSequence(allBytes, 0, Encoding.ASCII.GetBytes("EDC17_CPx4"), new byte[10] { 1, 1, 1, 1, 1, 1, 1, 1, 0, 1 }) > 0)
@@ -299,7 +310,6 @@ namespace VAGSuite
                 if (isPrimaryFile) m_currentFileType = EDCFileType.EDC17;
                 return EDCFileType.EDC17;
             }
-            
             else if (IsEDC16Partnumber(boschnumber))
             {
                 if (isPrimaryFile) m_currentFileType = EDCFileType.EDC16;
@@ -322,6 +332,11 @@ namespace VAGSuite
                     if (isPrimaryFile) m_currentFileType = EDCFileType.EDC15V;
                     return EDCFileType.EDC15V;
                 }
+            }
+            else if (info.EcuType.Contains("ME96"))
+            {
+                if (isPrimaryFile) m_currentFileType = EDCFileType.ME96;
+                return EDCFileType.ME96;
             }
             else
             {
@@ -394,6 +409,9 @@ namespace VAGSuite
                     parser = new MSA15FileParser();
                     break;
                 case EDCFileType.MSA6:
+                    parser = new MSA6FileParser();
+                    break;
+                case EDCFileType.ME96:
                     parser = new MSA6FileParser();
                     break;
 

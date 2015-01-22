@@ -15,7 +15,6 @@ namespace VAGSuite
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            DevExpress.UserSkins.OfficeSkins.Register();
             DevExpress.UserSkins.BonusSkins.Register();
             Application.Run(new frmMain());
         }

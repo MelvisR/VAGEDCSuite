@@ -90,6 +90,7 @@ namespace VAGSuite
         MSA11,
         MSA12,
         MSA15,
+        ME96,
         Unknown
     }
 
