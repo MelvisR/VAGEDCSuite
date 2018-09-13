@@ -75,7 +75,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Be.Windows.Forms.HexBox">
-      <HintPath>..\Libs\Be.Windows.Forms.HexBox.dll</HintPath>
+      <HintPath>.\Be.Windows.Forms.HexBox.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.BonusSkins.v11.2, Version=11.2.10.0, Culture=neutral, PublicKeyToken=95fc6c5621878f0a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.Charts.v11.2.Core, Version=11.2.10.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
